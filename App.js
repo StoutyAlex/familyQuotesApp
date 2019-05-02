@@ -3,13 +3,15 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Provider } from 'mobx-react/native';
 
 import observableStore from './src/mobx/observableStore';
+import userStore from './src/mobx/userStore';
+
 import MainContainer from './src/containers/MainContainer';
 import LoginContainer from './src/containers/LoginContainer';
 
 export default class App extends React.Component {
   render() {
     return (
-      <Provider observableStore={observableStore}>
+      <Provider observableStore={observableStore} userStore={userStore}>
         <View style={styles.container}>
           <LoginContainer />
         </View>
