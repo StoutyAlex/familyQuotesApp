@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { Input } from 'react-native-elements';
 
-@inject('userStore')
+@inject('userStore', 'sessionStore')
 @observer
 export default class LoginContainer extends Component {
   constructor() {
@@ -13,6 +13,12 @@ export default class LoginContainer extends Component {
     this.state = {
       signUpOrIn: 'in',
     };
+    this.signIn = this.signIn.bind(this);
+    this.signUp = this.signUp.bind(this);
+  }
+
+  static navigationOptions = {
+    headerMode: null
   }
 
   renderUsernameField() {
@@ -57,7 +63,7 @@ export default class LoginContainer extends Component {
       <View>
         {this.renderUsernameField()}
         {this.renderPasswordField()}
-        <Button title="Sign in" onPress={this.props.userStore.signIn}/>
+        <Button title="Sign in" onPress={this.signIn}/>
       </View>
     );
   }
@@ -93,9 +99,23 @@ export default class LoginContainer extends Component {
             />
           }
         />
-        <Button title="Sign up" onPress={this.props.userStore.signUp}/>
+        <Button title="Sign up" onPress={this.signUp}/>
       </View>
     );
+  }
+
+  async signIn() {
+    if (await this.props.userStore.signIn()) {
+      this.props.sessionStore.updateStore(this.props.userStore);
+      this.props.navigation.navigate('Home');
+    };
+  }
+
+  async signUp() {
+    if (await this.props.userStore.signUp()) {
+      this.props.sessionStore.updateStore(this.props.userStore);
+      this.props.navigation.navigate('Home');
+    }
   }
 
   render() {

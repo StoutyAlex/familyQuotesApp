@@ -38,6 +38,7 @@ class UserStore {
     if (result.status === 200 && result.data.success) {
       this.signedIn = true;
       this.token = result.data.data.token;
+      this.id = result.data.data._id;
       return true;
     } else {
       this.signedIn = false;
@@ -53,9 +54,10 @@ class UserStore {
         firstName: this.firstName,
         lastName: this.lastName,
     });
-    if (result.status === 200 && result.data.success) {
+    if (result.status === 200 && result.data.successc) {
       this.signedIn = true;
       this.token = result.data.data.token;
+      this.id = result.data.data._id;
       return true;
     } else {
       this.signedIn = false;
