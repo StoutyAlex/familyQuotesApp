@@ -1,4 +1,5 @@
 import { action, observable } from 'mobx';
+import { get } from 'lodash';
 import axios from 'axios';
 
 const baseUrl = 'http://192.168.1.211:4000';
@@ -10,28 +11,22 @@ class UserStore {
   @observable username;
   @observable firstName;
   @observable lastName;
+  @observable password;
+  @observable token;
 
   @action.bound setUsername(user) {
-    console.log('setting username');
-    console.log(user);
     this.username = user;
   }
 
   @action.bound setPassword(password) {
-    console.log('setting password');
-    console.log(password);
     this.password = password;
   }
 
   @action.bound setFirstName(firstName) {
-    console.log('firstName');
-    console.log(firstName);
     this.firstName = firstName;
   }
 
   @action.bound setLastName(lastName) {
-    console.log('lastName');
-    console.log(lastName);
     this.lastName = lastName;
   }
 
@@ -40,7 +35,15 @@ class UserStore {
       username: this.username,
       password: this.password,
     });
-    console.log(JSON.stringify(result.data));
+    if (result.status === 200 && result.data.success) {
+      this.signedIn = true;
+      this.token = result.data.data.token;
+      return true;
+    } else {
+      this.signedIn = false;
+      this.token = null;
+      return false;
+    }
   };
 
   @action.bound async signUp() {
@@ -50,8 +53,14 @@ class UserStore {
         firstName: this.firstName,
         lastName: this.lastName,
     });
-    if (result.status === 200) {
-      await this.signIn();
+    if (result.status === 200 && result.data.success) {
+      this.signedIn = true;
+      this.token = result.data.data.token;
+      return true;
+    } else {
+      this.signedIn = false;
+      this.token = null;
+      return false;
     }
   };
 

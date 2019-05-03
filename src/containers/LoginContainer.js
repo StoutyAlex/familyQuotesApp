@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Button } from 'react-native';
+import { StyleSheet, View, Button, Text } from 'react-native';
 import { inject, observer } from 'mobx-react/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -8,6 +8,12 @@ import { Input } from 'react-native-elements';
 @inject('userStore')
 @observer
 export default class LoginContainer extends Component {
+  constructor() {
+    super();
+    this.state = {
+      signUpOrIn: 'in',
+    };
+  }
 
   renderUsernameField() {
     return (
@@ -46,8 +52,17 @@ export default class LoginContainer extends Component {
     );
   }
 
+  renderSigninField() {
+    return (
+      <View>
+        {this.renderUsernameField()}
+        {this.renderPasswordField()}
+        <Button title="Sign in" onPress={this.props.userStore.signIn}/>
+      </View>
+    );
+  }
+
   renderSignupField() {
-    // const { this.props.userStore } = this.props;
     return (
       <View>
         {this.renderUsernameField()}
@@ -86,7 +101,15 @@ export default class LoginContainer extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {this.renderSignupField()}
+        <View>
+          <Button title="Sign Up" onPress={() => this.setState({ signUpOrIn: 'up'})}/>
+          <Button title="Sign In" onPress={() => this.setState({ signUpOrIn: 'in'})}/>
+        </View>
+        {this.state.signUpOrIn === 'up' && this.renderSignupField()}
+        {this.state.signUpOrIn === 'in' && this.renderSigninField()}
+        <Text>
+          {this.props.userStore.signedIn === true ? 'Signed in' : 'Signed out'}
+        </Text>
       </View>
     );
   }
